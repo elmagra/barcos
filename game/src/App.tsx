@@ -5,10 +5,13 @@ import { SeaErrorBoundary } from './SeaErrorBoundary'
 import { SeaScene } from './sea/SeaScene'
 import { palette } from './sea/palette'
 import { seaQuality, seaView } from './sea/sea-config'
+import { VoyageHud } from './voyage/VoyageHud'
+import { VoyageProvider } from './voyage/voyage-store'
 
 function App() {
   return (
-    <div className="app-container">
+    <VoyageProvider>
+      <div className="app-container">
       <SeaErrorBoundary>
         <Canvas
           camera={{
@@ -23,6 +26,7 @@ function App() {
           gl={{
             antialias: seaQuality.antialias,
             alpha: false,
+            preserveDrawingBuffer: true,
             powerPreference: 'high-performance',
             toneMapping: THREE.NoToneMapping,
           }}
@@ -35,7 +39,9 @@ function App() {
           </Suspense>
         </Canvas>
       </SeaErrorBoundary>
-    </div>
+      <VoyageHud />
+      </div>
+    </VoyageProvider>
   )
 }
 

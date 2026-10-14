@@ -1,41 +1,37 @@
 export const waterVertexShader = `
   varying vec3 vWorld;
-  varying float vDist;
   uniform float uTime;
-  uniform vec2 uRadius;
 
   void main() {
     vec4 world = modelMatrix * vec4(position, 1.0);
-    float swell = sin(world.x * 0.05 + uTime * 0.4) * 0.16;
-    swell += sin(world.z * 0.034 - uTime * 0.28) * 0.12;
+    float swell = sin(world.x * 0.045 + uTime * 0.35) * 0.1;
+    swell += sin(world.z * 0.031 - uTime * 0.22) * 0.07;
     world.y += swell;
     vWorld = world.xyz;
-    vDist = clamp(length(world.xz / uRadius), 0.0, 1.0);
     gl_Position = projectionMatrix * viewMatrix * world;
   }
 `
 
 export const waterFragmentShader = `
   varying vec3 vWorld;
-  varying float vDist;
   uniform vec3 uDeep;
   uniform vec3 uCoast;
-  uniform vec3 uFoam;
   uniform vec3 uFogColor;
+  uniform vec2 uRadius;
   uniform float uTime;
   uniform float uFogNear;
   uniform float uFogFar;
 
   void main() {
-    float shore = smoothstep(0.48, 0.9, vDist);
+    vec2 oval = vWorld.xz / uRadius;
+    float dist = clamp(length(oval), 0.0, 1.0);
+    float shore = smoothstep(0.62, 0.98, dist);
     vec3 color = mix(uDeep, uCoast, shore);
-    float band = sin(vWorld.z * 0.05 + uTime * 0.16);
-    color = mix(color, uCoast, smoothstep(0.2, 0.9, band) * 0.2);
-    float crest = pow(clamp(sin(vWorld.z * 0.062 + uTime * 0.18), 0.0, 1.0), 160.0);
-    color = mix(color, uFoam, crest * 0.4);
+    float ripple = sin(vWorld.x * 0.05 + uTime * 0.2) * sin(vWorld.z * 0.04 - uTime * 0.16);
+    color = mix(color, uCoast, (0.5 + 0.5 * ripple) * 0.06);
     float depth = distance(cameraPosition, vWorld);
     float fogMix = smoothstep(uFogNear, uFogFar, depth);
-    color = mix(color, uFogColor, fogMix * 0.65);
+    color = mix(color, uFogColor, fogMix * 0.28);
     gl_FragColor = vec4(color, 1.0);
   }
 `

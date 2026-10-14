@@ -1,6 +1,9 @@
 import { useLayoutEffect } from 'react'
 import { useThree } from '@react-three/fiber'
 import { AdaptiveDpr, AdaptiveEvents, OrbitControls } from '@react-three/drei'
+import { HumbleShip } from '../voyage/HumbleShip'
+import { VoyageCamera } from '../voyage/VoyageCamera'
+import { VoyageClock } from '../voyage/VoyageClock'
 import { seaView } from './sea-config'
 import { SeaLand } from './SeaLand'
 import { SeaLight } from './SeaLight'
@@ -30,9 +33,12 @@ export function SeaScene() {
       <SeaWater />
       <SeaLand />
       <SeaPorts />
+      <VoyageClock />
+      <HumbleShip />
       <AdaptiveDpr />
       <AdaptiveEvents />
       <OrbitControls
+        makeDefault
         target={seaView.cameraTarget}
         enablePan={false}
         enableDamping
@@ -41,6 +47,7 @@ export function SeaScene() {
         minDistance={seaView.minDistance}
         maxDistance={seaView.maxDistance}
       />
+      <VoyageCamera />
     </>
   )
 }

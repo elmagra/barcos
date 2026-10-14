@@ -2,22 +2,27 @@ import { useMemo } from 'react'
 import * as THREE from 'three'
 import { createBeachGeometry, createCoastGeometry } from './coast-geometry'
 import { palette } from './palette'
-import { seaLayout } from './sea-config'
+import { seaCover, seaLayout } from './sea-config'
+import { createSeaCover } from './water-cover'
 
 /** Costa de piedra y orilla de espuma que cierran el agua. */
 export function SeaLand() {
   const coastGeometry = useMemo(() => createCoastGeometry(), [])
   const beachGeometry = useMemo(() => createBeachGeometry(), [])
+  const fillGeometry = useMemo(
+    () => createSeaCover(
+      seaLayout.innerRadiusX,
+      seaLayout.innerRadiusZ,
+      seaCover.fillColumns,
+      seaCover.fillRows,
+    ),
+    [],
+  )
 
   return (
     <group>
-      <mesh
-        rotation-x={-Math.PI / 2}
-        position={[0, 0.02, 0]}
-        scale={[seaLayout.innerRadiusX, seaLayout.innerRadiusZ, 1]}
-      >
-        <circleGeometry args={[1, 48]} />
-        <meshBasicMaterial color={palette.deepWater} />
+      <mesh geometry={fillGeometry} position={[0, 0.02, 0]}>
+        <meshBasicMaterial color={palette.deepWater} side={THREE.DoubleSide} />
       </mesh>
       <mesh geometry={coastGeometry} castShadow receiveShadow>
         <meshLambertMaterial color={palette.metal} side={THREE.DoubleSide} />

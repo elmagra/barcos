@@ -80,12 +80,12 @@ export const portBlueprints: Record<PortSilhouette, PortBlueprint> = {
     crane: { height: 8.6, jib: 9, x: 0, z: 24 },
   },
   wideQuay: {
-    pier: { length: 16, width: 16, thickness: 0.55 },
+    pier: { length: 32, width: 16, thickness: 0.55 },
     shed: { width: 13.5, depth: 4.6, height: 3.5, offsetZ: -4.2 },
     crane: { height: 7.2, jib: 9.5, x: -5.4, z: 9 },
   },
   tallCrane: {
-    pier: { length: 15, width: 4.2, thickness: 0.42 },
+    pier: { length: 33, width: 4.2, thickness: 0.42 },
     shed: { width: 5.4, depth: 4.2, height: 3.2, offsetZ: -3.8 },
     crane: { height: 16, jib: 12, x: 0.4, z: 6.5 },
   },
@@ -143,6 +143,15 @@ const longestOuting = outingMeasures.reduce((longest, outing) => {
 
 if (longestOuting > seaLayout.maxOutingMeters) {
   throw new Error('El trayecto más largo no cabe en una salida')
+}
+
+/** Rejilla que tapa el óvalo del agua, más densa que un abanico. */
+export const seaCover = {
+  overflow: 1.015,
+  columns: 70,
+  rows: 50,
+  fillColumns: 48,
+  fillRows: 36,
 }
 
 export const seaView = {
